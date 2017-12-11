@@ -34,7 +34,6 @@ def decision_step(Rover):
                     Rover.brake = Rover.brake_set
                     Rover.steer = 0
                     Rover.mode = 'stop'
-
         # If we're already in "stop" mode then make different decisions
         elif Rover.mode == 'stop':
             # If we're in stop mode but still moving keep braking
@@ -49,9 +48,12 @@ def decision_step(Rover):
                     Rover.throttle = 0
                     # Release the brake to allow turning
                     Rover.brake = 0
-                    # Turn range is +/- 15 degrees, when stopped the next line will induce 4-wheel turning
-                    Rover.steer = -15 # Could be more clever here about which way to turn
-                # If we're stopped but see sufficient navigable terrain in front then go!
+                    # Turn range is +/- 15 degrees, when stopped the next line will induce 4-wheel turning            
+                    Rover.steer = 15 # Could be more clever here about which way to turn
+                else:
+                    Rover.brake = 0
+                    Rover.steer = -15
+                # If we're stopped but see sufficient navigable terrain in front then go!        
                 if len(Rover.nav_angles) >= Rover.go_forward:
                     # Set throttle back to stored value
                     Rover.throttle = Rover.throttle_set
@@ -68,6 +70,12 @@ def decision_step(Rover):
         Rover.brake = 0
         
     # If in a state where want to pickup a rock send pickup command
+    if Rover.near_sample:
+        Rover.throttle = 0
+        Rover.brake = 2
+        # Set brake to stored brake value
+        Rover.brake = Rover.brake_set
+        Rover.mode = 'stop'
     if Rover.near_sample and Rover.vel == 0 and not Rover.picking_up:
         Rover.send_pickup = True
     
