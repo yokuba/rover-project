@@ -91,9 +91,9 @@ def find_rocks(img, levels=(110, 110, 50)):
 
 # Apply the above functions in succession and update the Rover state accordingly
 def perception_step(Rover):
-    # Perform perception steps to update Rover()
-    # TODO: 
-    # NOTE: camera image is coming to you in Rover.img
+
+    # TODO: limit the pics to only those within a limited range of Rover.yaw
+
     # 1) Define source and destination points for perspective transform
     # 2) Apply perspective transform
     dst_size = 5 
