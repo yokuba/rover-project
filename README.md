@@ -22,8 +22,23 @@ The`Rover_Project_Test_Notebook.ipynb` contains the sample data from the simulat
 
 
 ## Navigating Autonomously
+The 'perception.py' file contains the adjustments to filter each video image from the Rover to separate the RGB vaules. The threshold for each pixel (approximately 160 for each RGB channel) separates the obstacles (value of '0') from the navigable terrain (value of '1'). Each binary image is then adjusted to the rover point-of-view (rover_coords). Then the radial distances and angles are calculated in the to_polar_coords function:
+
+        the distance of each pixel: np.sqrt(x_pixel**2 + y_pixel**2) 
+        
+        the angle of each pixel: np.arctan2(y_pixel, x_pixel)
+
+
+Then the pics are manipulated to display as a worldmap through the rotate_pix (to convert Rover yaw to radians), translate_pix and pix_to_world functions (displayed in `Rover_Project_Test_Notebook.ipynb` in the code folder).
+
+The perspect_transform method takes in each image and "performs the perspective matrix transformation of vectors" https://stackoverflow.com/questions/45817325/opencv-python-cv2-perspectivetransform.
+
+
+
+
 I did not make adjustments to the `drive_rover.py` since limiting the steer range ultimately caused the rover to keep slamming into the walls and lowering the fidelity. I did try to set limits for the yaw and roll, but that caused the rover to just stop moving. I limited the speed of the rover to 1 meter/second and added functionality for the rover to pick up a rock sample if the rover detects that it is near a sample.
 
+My next step is to switch the Rover.steer from nav.angles to the rock
 
 I incorporated the basic solution from the [Project Walkthrough Video](https://www.youtube.com/watch?v=oJA6QHDPdQw).
 
