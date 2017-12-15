@@ -29,12 +29,14 @@ The 'perception.py' file contains the adjustments to filter each video image fro
         the angle of each pixel: np.arctan2(y_pixel, x_pixel)
 
 
+
+
 Then the pics are manipulated to display as a worldmap through the rotate_pix (to convert Rover yaw to radians), translate_pix and pix_to_world functions (displayed in `Rover_Project_Test_Notebook.ipynb` in the code folder).
 
 The perspect_transform method takes in each image and "performs the perspective matrix transformation of vectors" https://stackoverflow.com/questions/45817325/opencv-python-cv2-perspectivetransform
 https://docs.opencv.org/3.0-beta/modules/core/doc/operations_on_arrays.html#perspectivetransform
 
-
+The rock map function works the same way as the obstacle/navigable terrain manipulation explained above, but only using the distance. I still need to incorporate that rock distance in the steer functionality of the 'decision.py' file. I did add the ability for the rover to pick up a rock sample when it is within pickup distance, but at this point, the rover only approaches a rock sample by pure chance.
 
 
 I did not make adjustments to the `drive_rover.py` since limiting the steer range ultimately caused the rover to keep slamming into the walls and lowering the fidelity. I did try to set limits for the yaw and roll, but that caused the rover to just stop moving. I limited the speed of the rover to 1 meter/second and added functionality for the rover to pick up a rock sample if the rover detects that it is near a sample.
