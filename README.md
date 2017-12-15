@@ -13,34 +13,36 @@ The project was run on the mac version of the Unity simulator at a resolution of
 
 This project contains a watered-down solution for the the [NASA sample return challenge](https://www.nasa.gov/directorates/spacetech/centennial_challenges/sample_return_robot/index.html).
 
-## The Simulator
-The first step is to download the simulator build that's appropriate for your operating system.  Here are the links for [Linux](https://s3-us-west-1.amazonaws.com/udacity-robotics/Rover+Unity+Sims/Linux_Roversim.zip), [Mac](	https://s3-us-west-1.amazonaws.com/udacity-robotics/Rover+Unity+Sims/Mac_Roversim.zip), or [Windows](https://s3-us-west-1.amazonaws.com/udacity-robotics/Rover+Unity+Sims/Windows_Roversim.zip).
-
-
 
 ## Recording Data
 The test_dataset folder contains the images and CSV file from a training run in the simulator. The output video is, appropriately enough, located in the 'output' folder (I couldn't render the video within the notebook on Github).
 
 ## Data Analysis
-The`Rover_Project_Test_Notebook.ipynb` contains the sample data from
+The`Rover_Project_Test_Notebook.ipynb` contains the sample data from the simulator, which is found in the test_dataset folder.
 
-
-The last two cells in the notebook are for running the analysis on a folder of test images to create a map of the simulator environment and write the output to a video.  These cells should run as-is and save a video called `test_mapping.mp4` to the `output` folder.  This should give you an idea of how to go about modifying the `process_image()` function to perform mapping on your data.
 
 ## Navigating Autonomously
-The file called `drive_rover.py` is what you will use to navigate the environment in autonomous mode.  This script calls functions from within `perception.py` and `decision.py`.  The functions defined in the IPython notebook are all included in`perception.py` and it's your job to fill in the function called `perception_step()` with the appropriate processing steps and update the rover map. `decision.py` includes another function called `decision_step()`, which includes an example of a conditional statement you could use to navigate autonomously.  Here you should implement other conditionals to make driving decisions based on the rover's state and the results of the `perception_step()` analysis.
+The 'perception.py' file contains the adjustments to filter each video image from the Rover to separate the RGB vaules. The threshold for each pixel (approximately 160 for each RGB channel) separates the obstacles (value of '0') from the navigable terrain (value of '1'). Each binary image is then adjusted to the rover point-of-view (rover_coords). Then the radial distances and angles are calculated in the to_polar_coords function:
 
-`drive_rover.py` should work as is if you have all the required Python packages installed. Call it at the command line like this:
+        the distance of each pixel: np.sqrt(x_pixel**2 + y_pixel**2) 
+        
+        the angle of each pixel: np.arctan2(y_pixel, x_pixel)
 
-```sh
-python drive_rover.py
-```
 
-Then launch the simulator and choose "Autonomous Mode".  The rover should drive itself now!  It doesn't drive that well yet, but it's your job to make it better!
 
-**Note: running the simulator with different choices of resolution and graphics quality may produce different results!  Make a note of your simulator settings in your writeup when you submit the project.**
 
-### Project Walkthrough
-If you're struggling to get started on this project, or just want some help getting your code up to the minimum standards for a passing submission, we've recorded a walkthrough of the basic implementation for you but **spoiler alert: this [Project Walkthrough Video](https://www.youtube.com/watch?v=oJA6QHDPdQw) contains a basic solution to the project!**.
+Then the pics are manipulated to display as a worldmap through the rotate_pix (to convert Rover yaw to radians), translate_pix and pix_to_world functions (displayed in `Rover_Project_Test_Notebook.ipynb` in the code folder).
+
+The perspect_transform method takes in each image and "performs the perspective matrix transformation of vectors" https://stackoverflow.com/questions/45817325/opencv-python-cv2-perspectivetransform
+https://docs.opencv.org/3.0-beta/modules/core/doc/operations_on_arrays.html#perspectivetransform
+
+The rock map function works the same way as the obstacle/navigable terrain manipulation explained above, but only using the distance. I still need to incorporate that rock distance in the steer functionality of the 'decision.py' file. I did add the ability for the rover to pick up a rock sample when it is within pickup distance, but at this point, the rover only approaches a rock sample by pure chance.
+
+
+I did not make adjustments to the `drive_rover.py` since limiting the steer range ultimately caused the rover to keep slamming into the walls and lowering the fidelity. I did try to set limits for the yaw and roll, but that caused the rover to just stop moving. I limited the speed of the rover to 1 meter/second and added functionality for the rover to pick up a rock sample if the rover detects that it is near a sample.
+
+My next step is to switch the Rover.steer from nav.angles to the rock.angles to steer the rover towards rocks (not yet implemented).
+
+I incorporated the basic solution from the [Project Walkthrough Video](https://www.youtube.com/watch?v=oJA6QHDPdQw).
 
 
